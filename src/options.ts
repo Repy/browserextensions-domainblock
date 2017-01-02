@@ -1,7 +1,7 @@
 /// <reference path="../node_modules/@types/chrome/index.d.ts" />
 /// <reference path="DomainBlock.ts" />
-
 declare var browser: any;
+if(!browser) browser = chrome;
 
 document.addEventListener('DOMContentLoaded', () => {
 	(<any>window).DomainBlockOptions = new DomainBlockOptions();

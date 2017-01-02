@@ -32,6 +32,6 @@
       "DomainBlock.js",
       "background.js"
     ],
-    "persistent": false
+    "persistent": true
   }
 }

@@ -1,5 +1,6 @@
 /// <reference path="../node_modules/@types/chrome/index.d.ts" />
 declare var browser: any;
+if(!browser) browser = chrome;
 
 interface DomainBlockWindow extends Window {
 	DomainBlock: DomainBlock;
@@ -72,8 +73,8 @@ class DomainBlock {
 		this.onBeforeRequest.removeListener(this.callback);
 
 		let filter: chrome.webRequest.RequestFilter = {
-			urls: [],
-			types: ["main_frame", "sub_frame", "stylesheet", "script", "image", "object", "xmlhttprequest", "xbl", "xslt", "ping", "beacon", "xml_dtd", "font", "media", "websocket", "csp_report", "imageset", "web_manifest", "other"]
+			urls: ["http://demo.demo.demo.demo/"],
+			// types: ["main_frame", "sub_frame", "stylesheet", "script", "image", "object", "xmlhttprequest", "xbl", "xslt", "ping", "beacon", "xml_dtd", "font", "media", "websocket", "csp_report", "imageset", "web_manifest", "other"]
 		};
 
 		for (let i = 0; i < this.list.length; i++) {
