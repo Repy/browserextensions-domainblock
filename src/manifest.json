@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+  "version": "0.1.2",
+  "author": "Repy",
+  "description": "Domain Block",
+  "name": "Domain Block",
+  "icons": {
+    "19": "icon.png",
+    "20": "icon.png",
+    "38": "icon.png"
+  },
+  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": false,
+    "open_in_tab": true
+  },
+  "permissions": [
+    "http://*/*",
+    "https://*/*",
+    "webRequest",
+    "webRequestBlocking",
+    "storage"
+  ],
+  "applications": {
+    "gecko": {
+      "id": "domainblock@repy.info"
+    }
+  },
+  "background": {
+    "scripts": [
+      "DomainBlock.js",
+      "background.js"
+    ],
+    "persistent": false
+  }
+}
