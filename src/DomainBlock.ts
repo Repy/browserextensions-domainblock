@@ -1,6 +1,6 @@
 /// <reference path="../node_modules/@types/chrome/index.d.ts" />
 declare var browser: any;
-if(!browser) browser = chrome;
+if(!(<any>window).browser) (<any>window).browser = chrome;
 
 interface DomainBlockWindow extends Window {
 	DomainBlock: DomainBlock;
