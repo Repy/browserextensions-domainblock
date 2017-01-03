@@ -5,9 +5,13 @@
   "description": "Domain Block",
   "name": "Domain Block",
   "icons": {
-    "19": "icon.png",
-    "20": "icon.png",
-    "38": "icon.png"
+    "16": "icon-16.png",
+    "19": "icon-24.png",
+    "20": "icon-24.png",
+    "38": "icon-48.png",
+    "48": "icon-48.png",
+    "120": "icon-120.png",
+    "128": "icon-chrome128.png"
   },
   "options_page": "options.html",
   "options_ui": {
