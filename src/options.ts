@@ -1,7 +1,7 @@
-/// <reference path="../node_modules/@types/chrome/index.d.ts" />
+/// <reference path="WebExtentions.d.ts" />
 /// <reference path="DomainBlock.ts" />
-declare var browser: any;
-if(!(<any>window).browser) (<any>window).browser = chrome;
+
+if (!browser) browser = chrome;
 
 document.addEventListener('DOMContentLoaded', () => {
 	(<any>window).DomainBlockOptions = new DomainBlockOptions();
@@ -15,7 +15,7 @@ class DomainBlockOptions {
 		this.ButtonSave = <HTMLButtonElement>document.getElementById("save");
 		this.FormDomain = <HTMLTextAreaElement>document.getElementById("domain");
 		this.ButtonSave.addEventListener('click', () => { this.saveclick(); });
-		browser.runtime.getBackgroundPage((backgroundWindow: DomainBlockWindow) => {
+		browser.runtime.getBackgroundPage((backgroundWindow) => {
 			backgroundWindow.DomainBlock = backgroundWindow.DomainBlock;
 			this.FormDomain.value = backgroundWindow.DomainBlock.getList().join("\n");
 		});
@@ -24,7 +24,7 @@ class DomainBlockOptions {
 	public saveclick() {
 		let domaintext = this.FormDomain.value;
 		let domainlist = domaintext.split("\n");
-		browser.runtime.getBackgroundPage((backgroundWindow: DomainBlockWindow) => {
+		browser.runtime.getBackgroundPage((backgroundWindow) => {
 			backgroundWindow.DomainBlock.reset();
 			backgroundWindow.DomainBlock.append(domainlist);
 			backgroundWindow.DomainBlock.save();

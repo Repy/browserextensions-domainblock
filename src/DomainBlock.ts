@@ -1,21 +1,20 @@
-/// <reference path="../node_modules/@types/chrome/index.d.ts" />
-declare var browser: any;
-if(!(<any>window).browser) (<any>window).browser = chrome;
+/// <reference path="WebExtentions.d.ts" />
 
-interface DomainBlockWindow extends Window {
+if (!browser) browser = chrome;
+
+interface Window {
 	DomainBlock: DomainBlock;
 }
 
 class DomainBlock {
-	private storage: chrome.storage.LocalStorageArea;
-	private onBeforeRequest: chrome.webRequest.WebRequestBodyEvent;
 	constructor() {
-		this.storage = browser.storage.local;
-		this.onBeforeRequest = browser.webRequest.onBeforeRequest;
 		this.list = [];
 		this.load(() => {
 			this.setCallback();
 		});
+		if ((<any>window).sidebar) {
+			browser.pageAction.show(0);
+		}
 	}
 
 	private list: string[];
@@ -54,7 +53,7 @@ class DomainBlock {
 	}
 
 	public load(callback: Function) {
-		this.storage.get(["domain"],
+		browser.storage.local.get(["domain"],
 			(config) => {
 				let domainlist = []
 				if (typeof config["domain"] === "object" && typeof config["domain"].length === "number" && typeof config["domain"].join === "function") {
@@ -69,8 +68,11 @@ class DomainBlock {
 	private callback = (details: chrome.webRequest.WebRequestBodyDetails): any => {
 		return { cancel: true };
 	};
+
 	public setCallback() {
-		this.onBeforeRequest.removeListener(this.callback);
+		if (browser.webRequest.onBeforeRequest.hasListener(this.callback)) {
+			browser.webRequest.onBeforeRequest.removeListener(this.callback);
+		}
 
 		let filter: chrome.webRequest.RequestFilter = {
 			urls: ["http://demo.demo.demo.demo/"],
@@ -82,7 +84,7 @@ class DomainBlock {
 			filter.urls.push("https://*." + this.list[i] + "/*");
 		}
 
-		this.onBeforeRequest.addListener(
+		browser.webRequest.onBeforeRequest.addListener(
 			this.callback,
 			filter,
 			["blocking"]
@@ -90,6 +92,6 @@ class DomainBlock {
 	}
 
 	public save() {
-		this.storage.set({ "domain": this.list });
+		browser.storage.local.set({ "domain": this.list });
 	}
 }
