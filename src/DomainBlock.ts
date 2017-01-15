@@ -1,6 +1,5 @@
 /// <reference path="WebExtentions.d.ts" />
-
-if (!browser) browser = chrome;
+if (!window["browser"]) window["browser"] = window.chrome;
 
 interface Window {
 	DomainBlock: DomainBlock;
@@ -65,8 +64,10 @@ class DomainBlock {
 		);
 	}
 
+	private callbackval = { cancel: true };
+
 	private callback = (details: chrome.webRequest.WebRequestBodyDetails): any => {
-		return { cancel: true };
+		return this.callbackval;
 	};
 
 	public setCallback() {

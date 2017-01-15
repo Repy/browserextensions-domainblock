@@ -1,7 +1,6 @@
 /// <reference path="WebExtentions.d.ts" />
 /// <reference path="DomainBlock.ts" />
-
-if (!browser) browser = chrome;
+if (!window["browser"]) window["browser"] = window.chrome;
 
 document.addEventListener('DOMContentLoaded', () => {
 	(<any>window).DomainBlockOptions = new DomainBlockOptions();
