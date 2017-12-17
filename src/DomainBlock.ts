@@ -2,18 +2,35 @@
 if (!window["browser"]) window["browser"] = window.chrome;
 
 interface Window {
-	DomainBlock: DomainBlock;
+	domainblock: DomainBlock;
 }
 
 class DomainBlock {
-	constructor() {
+	private constructor() {
 		this.list = [];
 		this.load(() => {
 			this.setCallback();
 		});
-		if ((<any>window).sidebar) {
-			browser.pageAction.show(0);
+	}
+
+	private lastClick: number = 0;
+	public toggle(){
+		if(this.hasCallback()){
+			this.removeCallback();
+		}else{
+			this.setCallback();
 		}
+		if (this.lastClick + 1000 > (new Date()).getTime()){
+			browser.tabs.create({
+				url: browser.runtime.getURL("options.html")
+			});
+		}
+		this.lastClick = (new Date()).getTime();
+	}
+
+	public static getInstance(): DomainBlock{
+		if(!window.domainblock)	window.domainblock = new DomainBlock();
+		return window.domainblock;
 	}
 
 	private list: string[];
@@ -70,10 +87,19 @@ class DomainBlock {
 		return this.callbackval;
 	};
 
-	public setCallback() {
-		if (browser.webRequest.onBeforeRequest.hasListener(this.callback)) {
+	public hasCallback(): boolean{
+		return browser.webRequest.onBeforeRequest.hasListener(this.callback);
+	}
+
+	public removeCallback(){
+		if (this.hasCallback()) {
 			browser.webRequest.onBeforeRequest.removeListener(this.callback);
+			browser.browserAction.setBadgeText({ text: "OFF" });
 		}
+	}
+
+	public setCallback() {
+		this.removeCallback();
 
 		let filter: chrome.webRequest.RequestFilter = {
 			urls: ["http://demo.demo.demo.demo/"],
@@ -90,6 +116,7 @@ class DomainBlock {
 			filter,
 			["blocking"]
 		);
+		browser.browserAction.setBadgeText({ text: "ON" });
 	}
 
 	public save() {

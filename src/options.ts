@@ -15,8 +15,7 @@ class DomainBlockOptions {
 		this.FormDomain = <HTMLTextAreaElement>document.getElementById("domain");
 		this.ButtonSave.addEventListener('click', () => { this.saveclick(); });
 		browser.runtime.getBackgroundPage((backgroundWindow) => {
-			backgroundWindow.DomainBlock = backgroundWindow.DomainBlock;
-			this.FormDomain.value = backgroundWindow.DomainBlock.getList().join("\n");
+			this.FormDomain.value = backgroundWindow.domainblock.getList().join("\n");
 		});
 	}
 
@@ -24,10 +23,10 @@ class DomainBlockOptions {
 		let domaintext = this.FormDomain.value;
 		let domainlist = domaintext.split("\n");
 		browser.runtime.getBackgroundPage((backgroundWindow) => {
-			backgroundWindow.DomainBlock.reset();
-			backgroundWindow.DomainBlock.append(domainlist);
-			backgroundWindow.DomainBlock.save();
-			backgroundWindow.DomainBlock.setCallback();
+			backgroundWindow.domainblock.reset();
+			backgroundWindow.domainblock.append(domainlist);
+			backgroundWindow.domainblock.save();
+			backgroundWindow.domainblock.setCallback();
 		});
 	}
 }
