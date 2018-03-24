@@ -107,8 +107,12 @@ class DomainBlock {
 		};
 
 		for (let i = 0; i < this.list.length; i++) {
-			filter.urls.push("http://*." + this.list[i] + "/*");
-			filter.urls.push("https://*." + this.list[i] + "/*");
+			var turl = this.list[i];
+			if(turl.indexOf("/") < 0){
+				turl = turl + "/"
+			}
+			filter.urls.push("http://*." + turl + "*");
+			filter.urls.push("https://*." + turl + "*");
 		}
 
 		browser.webRequest.onBeforeRequest.addListener(
