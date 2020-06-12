@@ -1,4 +1,4 @@
-import "../lib/WebExtensions";
+import "./lib/WebExtensions";
 
 declare global {
 	interface Window {
