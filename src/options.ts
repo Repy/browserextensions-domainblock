@@ -1,6 +1,5 @@
-/// <reference path="WebExtentions.d.ts" />
-/// <reference path="DomainBlock.ts" />
-if (!window["browser"]) window["browser"] = window.chrome;
+import "./lib/WebExtensions";
+import "./DomainBlock";
 
 document.addEventListener('DOMContentLoaded', () => {
 	(<any>window).DomainBlockOptions = new DomainBlockOptions();
@@ -15,7 +14,8 @@ class DomainBlockOptions {
 		this.FormDomain = <HTMLTextAreaElement>document.getElementById("domain");
 		this.ButtonSave.addEventListener('click', () => { this.saveclick(); });
 		browser.runtime.getBackgroundPage((backgroundWindow) => {
-			this.FormDomain.value = backgroundWindow.domainblock.getList().join("\n");
+			if (!backgroundWindow) return;
+			this.FormDomain.value = backgroundWindow.background.getList().join("\n");
 		});
 	}
 
@@ -23,10 +23,11 @@ class DomainBlockOptions {
 		let domaintext = this.FormDomain.value;
 		let domainlist = domaintext.split("\n");
 		browser.runtime.getBackgroundPage((backgroundWindow) => {
-			backgroundWindow.domainblock.reset();
-			backgroundWindow.domainblock.append(domainlist);
-			backgroundWindow.domainblock.save();
-			backgroundWindow.domainblock.setCallback();
+			if (!backgroundWindow) return;
+			backgroundWindow.background.reset();
+			backgroundWindow.background.append(domainlist);
+			backgroundWindow.background.save();
+			backgroundWindow.background.setCallback();
 		});
 	}
 }

@@ -1,12 +1,13 @@
-/// <reference path="WebExtentions.d.ts" />
-if (!window["browser"]) window["browser"] = window.chrome;
+import "../lib/WebExtensions";
 
-interface Window {
-	domainblock: DomainBlock;
+declare global {
+	interface Window {
+		background: DomainBlock;
+	}
 }
 
-class DomainBlock {
-	private constructor() {
+export class DomainBlock {
+	public constructor() {
 		this.list = [];
 		this.load(() => {
 			this.setCallback();
@@ -14,23 +15,18 @@ class DomainBlock {
 	}
 
 	private lastClick: number = 0;
-	public toggle(){
-		if(this.hasCallback()){
+	public toggle() {
+		if (this.hasCallback()) {
 			this.removeCallback();
-		}else{
+		} else {
 			this.setCallback();
 		}
-		if (this.lastClick + 1000 > (new Date()).getTime()){
+		if (this.lastClick + 1000 > (new Date()).getTime()) {
 			browser.tabs.create({
 				url: browser.runtime.getURL("options.html")
 			});
 		}
 		this.lastClick = (new Date()).getTime();
-	}
-
-	public static getInstance(): DomainBlock{
-		if(!window.domainblock)	window.domainblock = new DomainBlock();
-		return window.domainblock;
 	}
 
 	private list: string[];
@@ -43,8 +39,8 @@ class DomainBlock {
 	}
 
 	public append(domains: string[]) {
-		let alllist = this.list.concat(domains);
-		let newlist = [];
+		let alllist: string[] = this.list.concat(domains);
+		let newlist: string[] = [];
 		for (let i = 0; i < alllist.length; i++) {
 			if (alllist[i] === "") continue;
 			let j = 0;
@@ -57,7 +53,7 @@ class DomainBlock {
 	}
 
 	public remove(domains: string[]) {
-		let newlist = [];
+		let newlist: string[] = [];
 		for (let i = 0; i < this.list.length; i++) {
 			let j = 0;
 			for (j = 0; j < domains.length; j++) {
@@ -71,7 +67,7 @@ class DomainBlock {
 	public load(callback: Function) {
 		browser.storage.local.get(["domain"],
 			(config) => {
-				let domainlist = []
+				let domainlist = [];
 				if (typeof config["domain"] === "object" && typeof config["domain"].length === "number" && typeof config["domain"].join === "function") {
 					domainlist = config["domain"];
 				}
@@ -87,11 +83,11 @@ class DomainBlock {
 		return this.callbackval;
 	};
 
-	public hasCallback(): boolean{
+	public hasCallback(): boolean {
 		return browser.webRequest.onBeforeRequest.hasListener(this.callback);
 	}
 
-	public removeCallback(){
+	public removeCallback() {
 		if (this.hasCallback()) {
 			browser.webRequest.onBeforeRequest.removeListener(this.callback);
 			browser.browserAction.setBadgeText({ text: "OFF" });
@@ -108,8 +104,8 @@ class DomainBlock {
 
 		for (let i = 0; i < this.list.length; i++) {
 			var turl = this.list[i];
-			if(turl.indexOf("/") < 0){
-				turl = turl + "/"
+			if (turl.indexOf("/") < 0) {
+				turl = turl + "/";
 			}
 			filter.urls.push("http://*." + turl + "*");
 			filter.urls.push("https://*." + turl + "*");

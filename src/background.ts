@@ -1,8 +1,8 @@
-/// <reference path="../node_modules/@types/chrome/index.d.ts" />
-/// <reference path="DomainBlock.ts" />
+import "./lib/WebExtensions";
+import { DomainBlock } from "./DomainBlock";
 
-DomainBlock.getInstance();
+window.background = new DomainBlock();
 
 browser.browserAction.onClicked.addListener((tab: chrome.tabs.Tab) => {
-	DomainBlock.getInstance().toggle();
+	window.background.toggle();
 });

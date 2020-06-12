@@ -1,8 +1,7 @@
 %~d0
 cd "%~dp0"
-node.exe node_modules\typescript\lib\tsc.js -p .
+npm.exe run build
 del DomainBlocker.zip
-cd src
+cd dist
 ..\7za.exe a -tzip ..\DomainBlocker.zip *
 cd "%~dp0"
-
