@@ -15,7 +15,6 @@
     "120": "icon-120.png",
     "128": "icon-chrome128.png"
   },
-  "options_page": "options.html",
   "options_ui": {
     "page": "options.html",
     "chrome_style": false,
@@ -35,7 +34,6 @@
   },
   "background": {
     "scripts": [
-      "DomainBlock.js",
       "background.js"
     ],
     "persistent": true
