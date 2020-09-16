@@ -12,5 +12,8 @@
       "chrome"
     ],
     "sourceMap": true
-  }
+  },
+  "include": [
+    "./src"
+  ]
 }

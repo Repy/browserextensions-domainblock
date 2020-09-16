@@ -52,21 +52,5 @@
       "120": "icon-120.png",
       "128": "icon-chrome128.png"
     }
-  },
-  "page_action": {
-    "browser_style": false,
-    "default_title": "Domain Block",
-    "default_popup": "options.html",
-    "default_icon": {
-      "16": "icon-16.png",
-      "19": "icon-24.png",
-      "20": "icon-24.png",
-      "24": "icon-24.png",
-      "32": "icon-48.png",
-      "38": "icon-48.png",
-      "48": "icon-48.png",
-      "120": "icon-120.png",
-      "128": "icon-chrome128.png"
-    }
   }
 }
