@@ -1,8 +1,16 @@
 import "./lib/WebExtensions";
-import { DomainBlock } from "./DomainBlock";
+import { DomainBlock, LiveHttpLogger } from "./DomainBlock";
 
-window.background = new DomainBlock();
+declare global {
+	interface Window {
+		DomainBlock: DomainBlock;
+		LiveHttpLogger: LiveHttpLogger;
+	}
+}
+
+window.DomainBlock = new DomainBlock();
+window.LiveHttpLogger = new LiveHttpLogger();
 
 browser.browserAction.onClicked.addListener((tab: chrome.tabs.Tab) => {
-	window.background.toggle();
+	window.DomainBlock.toggle();
 });

@@ -2,14 +2,11 @@
   "compilerOptions": {
     "rootDir": "./src",
     "strictNullChecks": true,
-    "target": "ES2015",
-    "module": "ES2015",
+    "target": "es5",
+    "module": "es6",
     "lib": [
-      "ES2015",
+      "es6",
       "DOM"
-    ],
-    "types": [
-      "chrome"
     ],
     "sourceMap": true
   },

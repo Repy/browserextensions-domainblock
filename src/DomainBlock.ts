@@ -1,25 +1,19 @@
 import "./lib/WebExtensions";
 
-declare global {
-	interface Window {
-		background: DomainBlock;
-	}
-}
-
 export class DomainBlock {
 	public constructor() {
 		this.list = [];
 		this.load(() => {
-			this.setCallback();
+			this.enable();
 		});
 	}
 
 	private lastClick: number = 0;
 	public toggle() {
-		if (this.hasCallback()) {
-			this.removeCallback();
+		if (this.isEnable()) {
+			this.disable();
 		} else {
-			this.setCallback();
+			this.enable();
 		}
 		if (this.lastClick + 1000 > (new Date()).getTime()) {
 			browser.tabs.create({
@@ -77,25 +71,25 @@ export class DomainBlock {
 		);
 	}
 
-	private callbackval = { cancel: true };
 
-	private callback = (details: chrome.webRequest.WebRequestBodyDetails): any => {
+	private callbackval = { cancel: true };
+	private blockingFunc = (details: chrome.webRequest.WebRequestBodyDetails) => {
 		return this.callbackval;
 	};
 
-	public hasCallback(): boolean {
-		return browser.webRequest.onBeforeRequest.hasListener(this.callback);
+	public isEnable(): boolean {
+		return browser.webRequest.onBeforeRequest.hasListener(this.blockingFunc);
 	}
 
-	public removeCallback() {
-		if (this.hasCallback()) {
-			browser.webRequest.onBeforeRequest.removeListener(this.callback);
+	public disable() {
+		if (this.isEnable()) {
+			browser.webRequest.onBeforeRequest.removeListener(this.blockingFunc);
 			browser.browserAction.setBadgeText({ text: "OFF" });
 		}
 	}
 
-	public setCallback() {
-		this.removeCallback();
+	public enable() {
+		this.disable();
 
 		let filter: chrome.webRequest.RequestFilter = {
 			urls: ["http://demo.demo.demo.demo/"],
@@ -112,7 +106,7 @@ export class DomainBlock {
 		}
 
 		browser.webRequest.onBeforeRequest.addListener(
-			this.callback,
+			this.blockingFunc,
 			filter,
 			["blocking"]
 		);
@@ -121,5 +115,66 @@ export class DomainBlock {
 
 	public save() {
 		browser.storage.local.set({ "domain": this.list });
+	}
+}
+
+export class LiveHttpLogger {
+	public constructor() {
+		this.disable();
+	}
+
+	private liveLoggerTargetList: Window[] = [];
+	public addTarget(target: Window) {
+		this.removeTarget(target);
+		this.liveLoggerTargetList.push(target);
+	}
+	public removeTarget(target: Window) {
+		let wins: Window[] = [];
+		for (const l of this.liveLoggerTargetList) {
+			if (target != l) wins.push(l);
+		}
+		this.liveLoggerTargetList = wins;
+		if (this.liveLoggerTargetList.length == 0) {
+			this.disable();
+		}
+	}
+
+	private liveLoggerFunc = (details: chrome.webRequest.WebRequestHeadersDetails) => {
+		const copy = this.liveLoggerTargetList.concat();
+		for (const target of copy) {
+			try {
+				target.postMessage(details.url, "*");
+			} catch (e) {
+				this.removeTarget(target);
+			}
+		}
+		if (copy.length == 0) {
+			this.disable();
+		}
+	};
+
+
+	public isEnable(): boolean {
+		return browser.webRequest.onSendHeaders.hasListener(this.liveLoggerFunc);
+	}
+
+	public disable() {
+		if (this.isEnable()) {
+			browser.webRequest.onBeforeRequest.removeListener(this.liveLoggerFunc);
+		}
+		browser.browserAction.setBadgeBackgroundColor({ color: "#0000FF" });
+	}
+
+	public enable() {
+		if (!this.isEnable()) {
+			browser.webRequest.onSendHeaders.addListener(
+				this.liveLoggerFunc,
+				{
+					urls: ["<all_urls>"]
+				},
+				["requestHeaders"]
+			);
+		}
+		browser.browserAction.setBadgeBackgroundColor({ color: "#AA0000" });
 	}
 }
